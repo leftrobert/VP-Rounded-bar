@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Rounded-bars by wavesurfer.js</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+		<script src="https://unpkg.com/wavesurfer.js"></script>
+		<style>
+			body{background:url(bg.jpg) center fixed no-repeat;background-size:cover;overflow:hidden;}
+			.container{width:541px;overflow-y:hidden;padding:20px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:16px;box-shadow:0 5px 25px rgba(0,0,0,.2);backdrop-filter:blur(25px) saturate(112%);background:url(noise.png),rgba(255,255,255,.4);}
+			input[type=text]{padding:10px;width:450px;background:rgba(255,255,255,.8);border:1px solid rgba(63,63,63,.2);border-bottom:4px solid #0094ff; border-radius:6px;outline:none;}
+			input[type=text]:hover, input[type=text]:focus {background:rgba(255,255,255,1);transition:.3s;}
+			button{margin-left:6px;padding:10px 15px;background:#0094ff;border:2px solid rgba(63,63,63,.2);border-radius:6px;color:#fff;transition:.3s;line-height:16px;}
+			button:hover{background:#1aa7ff;}
+			button:active{background:#0079ee;}
+			.disabled,.disabled:hover,.disabled:active{background:#a0a0a0;box-shadow:none;}
+			input[type=text]:hover[type=text],button:hover{box-shadow:0 2px 6px rgba(0,0,0,.2);}
+			#waveform{position:absolute;top:50%;left:50%;width:2176px;height:930px;transform:translate(-50%,-50%) scale(.25);}
+			.show{width:540px;height:270px;background:center no-repeat;background-size:contain;}
+		</style>
+		<script>
+			function getOrderId(){
+				let dl=document.getElementById('download');
+				dl.removeAttribute('class');
+				dl.setAttribute('onclick','downloadPng()');
+			}
+			function checkBlank() {
+				let OId = document.getElementById('OrderId').value;
+				if (OId !== "") getOrderId(OId);
+			}
+			function downloadPng() {
+				window.location.href=document.getElementsByTagName('canvas')[0].toDataURL('image/png').replace("image/png", "image/octet-stream");
+			}
+
+		</script>
+	</head>
+	<body>
+		<div class="container" align="center">
+			<input type="text" name="OrderId" id="OrderId" placeholder="Order ID (Audio file name)" onclick="document.getElementById('FilePath').click()">
+			<input type="file" name="FilePath" id="FilePath" accept="audio/*,video/*" style="display:none">
+			<button class="disabled" id="download" style="display:block;margin-block-start:300px;">Download</button>
+		</div>
+		<div id="waveform"></div>
+		<script>
+			var waves = WaveSurfer.create({
+			container: '#waveform',
+			waveColor: 'black',
+			progressColor: 'black',
+			cursorColor: 'transparent',
+			barWidth: 48,
+			barHeight: 6,
+			barGap: 48,
+			barRadius: 24,
+			height: 930
+		});
+		var fileInput = document.getElementById('FilePath');
+
+		fileInput.addEventListener('change', function(e) {
+			document.getElementById('OrderId').value=this.files[0].name;
+			var url = URL.createObjectURL(e.target.files[0]);
+			waves.load(url);
+			getOrderId();
+		});
+		</script>
+	</body>
+</html>
